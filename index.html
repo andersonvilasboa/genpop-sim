@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#15324a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GenPop Sim" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>GenPop Sim — Genética de Populações</title>
+  <style>
+    :root{--bg:#f4f7f8;--card:#fff;--ink:#17212b;--muted:#5f6b76;--brand:#15324a;--brand2:#2d6a7a;--line:#d8e0e4;--accent:#dfeef1;--danger:#9b2c2c;--ok:#235d3a;--shadow:0 8px 24px rgba(17,33,46,.08)}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    header{position:sticky;top:0;z-index:10;background:var(--brand);color:#fff;padding:14px 16px;box-shadow:0 2px 12px rgba(0,0,0,.14)}
+    .top{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:#fff;color:var(--brand);display:grid;place-items:center;font-weight:800}.title{line-height:1.1}.title b{font-size:1.08rem}.title small{display:block;opacity:.85;margin-top:3px}.spacer{flex:1}
+    button,.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:650;cursor:pointer;background:var(--brand2);color:white}.btn.secondary{background:#e8eef1;color:var(--brand);border:1px solid #c8d4d9}.btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}.btn.warn{background:#805b11}.btn:disabled{opacity:.45;cursor:not-allowed}
+    main{max-width:1200px;margin:16px auto;padding:0 12px 80px}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}.tab{white-space:nowrap;background:#e9eff2;color:#294150;border:1px solid #d1dde2}.tab.active{background:var(--brand);color:#fff}
+    .grid{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:14px;align-items:start}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}.card h2,.card h3{margin:0 0 12px}.card h2{font-size:1.12rem}.card h3{font-size:1rem}.help{color:var(--muted);font-size:.9rem;line-height:1.4}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:.82rem;font-weight:700;color:#344752}.field input,.field select,.field textarea{width:100%;border:1px solid #c9d4da;border-radius:9px;padding:10px;background:#fff;color:var(--ink);font-size:1rem}.field input:focus,.field select:focus{outline:2px solid #8fb7c2;border-color:transparent}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:8px;margin:12px 0}.metric{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fafcfd}.metric b{display:block;font-size:1.12rem}.metric span{font-size:.78rem;color:var(--muted)}
+    .chart-wrap{border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;margin-top:10px;overflow:hidden}.chart-title{font-weight:700;font-size:.9rem;margin:2px 4px 6px}.canvas-box{width:100%;height:330px}.canvas-box.small{height:250px} canvas{width:100%;height:100%;display:block}
+    .notice{background:#edf5f7;border:1px solid #c9dfe5;border-radius:10px;padding:10px 12px;font-size:.88rem;line-height:1.4;margin-bottom:12px}.notice strong{color:#15324a}.error{background:#fff0f0;border-color:#efc7c7;color:#7a2323}.success{background:#eef8f0;border-color:#cce5d2;color:#1e5d34}
+    table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{border-bottom:1px solid #e2e8eb;padding:7px 6px;text-align:right}th:first-child,td:first-child{text-align:left}th{color:#40525d;background:#f8fafb;position:sticky;top:0}.table-scroll{overflow:auto;max-height:320px;border:1px solid var(--line);border-radius:10px}
+    details{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px;background:#fbfcfd}details summary{font-weight:700;cursor:pointer}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hidden{display:none!important}.footer-note{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}
+    .install-tip{font-size:.8rem;max-width:350px}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--accent);color:#21404b;font-size:.75rem;font-weight:700}
+    @media(max-width:820px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.canvas-box{height:280px}.top .install-tip{display:none}.card{padding:13px}}
+  </style>
+</head>
+<body>
+<header><div class="top"><div class="logo">GP</div><div class="title"><b>GenPop Sim</b><small>Simulador offline de Genética de Populações</small></div><div class="spacer"></div><button id="installBtn" class="btn ghost hidden">Instalar</button></div></header>
+<main>
+  <div id="offlineNotice" class="notice"><strong>Funciona sem internet.</strong> A simulação é feita integralmente no dispositivo. Para instalar como aplicativo, abra esta versão por HTTPS e use “Adicionar à tela de início”.</div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-view="drift">Deriva genética</button>
+    <button class="tab" data-view="selection">Seleção natural</button>
+    <button class="tab" data-view="structure">Estrutura e migração</button>
+    <button class="tab" data-view="driftsel">Seleção + deriva</button>
+    <button class="tab" data-view="multi">Seleção multialélica</button>
+  </div>
+
+  <section id="view-drift" class="view grid">
+    <div class="card"><h2>Deriva genética</h2><div class="help">Modelo Wright–Fisher diploide. Cada réplica/locus evolui independentemente.</div>
+      <div class="form-grid">
+        <div class="field"><label>Tamanho populacional (N)</label><input id="dN" type="number" min="2" max="2000"></div>
+        <div class="field"><label>Gerações</label><input id="dG" type="number" min="1" max="10000"></div>
+        <div class="field"><label>Frequência inicial de A (p₀)</label><input id="dP" type="number" min="0" max="1" step="0.00001"></div>
+        <div class="field"><label>Réplicas / loci</label><input id="dR" type="number" min="1" max="200"></div>
+        <div class="field full"><label>Semente aleatória (opcional)</label><input id="dSeed" type="text" placeholder="vazio = nova simulação"></div>
+      </div>
+      <div class="actions"><button id="runDrift">Simular</button><button id="runDriftAbs" class="btn secondary">Até absorção</button><button id="csvDrift" class="btn secondary" disabled>CSV</button></div>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="dMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência do alelo A × geração</div><div class="canvas-box"><canvas id="dChart"></canvas></div></div><details><summary>Resultados por réplica</summary><div id="dTable" class="table-scroll"></div></details></div>
+  </section>
+
+  <section id="view-selection" class="view grid hidden">
+    <div class="card"><h2>Seleção natural — locus dialélico</h2><div class="help">Modelo determinístico com seleção por viabilidade, acasalamento aleatório e Hardy–Weinberg a cada geração.</div>
+      <div class="form-grid">
+        <div class="field"><label>p₀ (A)</label><input id="sP" type="number" min="0" max="1" step="0.00001"></div>
+        <div class="field"><label>Gerações</label><input id="sG" type="number" min="1" max="10000"></div>
+        <div class="field"><label>WAA</label><input id="sWAA" type="number" min="0" step="0.0001"></div>
+        <div class="field"><label>WAa</label><input id="sWAa" type="number" min="0" step="0.0001"></div>
+        <div class="field"><label>Waa</label><input id="sWaa" type="number" min="0" step="0.0001"></div>
+        <div class="field"><label>Frequências iniciais</label><select id="sMulti"><option value="single">Somente p₀</option><option value="six">Seis frequências</option></select></div>
+        <div class="field full"><label>Genótipos exibidos</label><select id="sGenoStage"><option value="pre">Antes da seleção (Hardy–Weinberg)</option><option value="post">Após a seleção por viabilidade</option></select></div>
+      </div>
+      <div class="actions"><button id="runSel">Simular</button><button id="csvSel" class="btn secondary" disabled>CSV</button></div>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="sMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência de A × geração</div><div class="canvas-box"><canvas id="sChart"></canvas></div></div><div class="two"><div class="chart-wrap"><div class="chart-title">Frequências genotípicas × geração</div><div class="canvas-box small"><canvas id="sGenoChart"></canvas></div></div><div class="chart-wrap"><div class="chart-title">Valor adaptativo médio (W̄) × p</div><div class="canvas-box small"><canvas id="sFitChart"></canvas></div></div></div></div>
+  </section>
+
+  <section id="view-structure" class="view grid hidden">
+    <div class="card"><h2>Estrutura populacional e migração</h2><div class="help">Modelo-ilha: migração simétrica entre demes seguida de deriva Wright–Fisher em cada deme.</div>
+      <div class="form-grid">
+        <div class="field"><label>N por deme</label><input id="tN" type="number" min="2" max="2000"></div>
+        <div class="field"><label>Número de demes</label><input id="tD" type="number" min="2" max="100"></div>
+        <div class="field"><label>p₀</label><input id="tP" type="number" min="0" max="1" step="0.00001"></div>
+        <div class="field"><label>Taxa de migração (m)</label><input id="tM" type="number" min="0" max="1" step="0.0001"></div>
+        <div class="field"><label>Gerações</label><input id="tG" type="number" min="1" max="10000"></div>
+        <div class="field"><label>Semente (opcional)</label><input id="tSeed" type="text"></div>
+      </div>
+      <div class="actions"><button id="runStr">Simular</button><button id="runStrAbs" class="btn secondary">Até absorção</button><button id="csvStr" class="btn secondary" disabled>CSV</button></div>
+      
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="tMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência de A em cada deme × geração</div><div class="canvas-box"><canvas id="tChart"></canvas></div></div><div class="chart-wrap"><div class="chart-title">FST × geração</div><div class="canvas-box small"><canvas id="fstChart"></canvas></div></div></div>
+  </section>
+
+  <section id="view-driftsel" class="view grid hidden">
+    <div class="card"><h2>Seleção + deriva</h2><div class="help">Seleção por viabilidade seguida de amostragem Wright–Fisher. Permite observar a competição entre processos determinísticos e estocásticos.</div>
+      <div class="form-grid">
+        <div class="field"><label>N</label><input id="xN" type="number" min="2" max="2000"></div>
+        <div class="field"><label>Gerações</label><input id="xG" type="number" min="1" max="10000"></div>
+        <div class="field"><label>p₀</label><input id="xP" type="number" min="0" max="1" step="0.00001"></div>
+        <div class="field"><label>Réplicas</label><input id="xR" type="number" min="1" max="200"></div>
+        <div class="field"><label>WAA</label><input id="xWAA" type="number" min="0" step="0.0001"></div>
+        <div class="field"><label>WAa</label><input id="xWAa" type="number" min="0" step="0.0001"></div>
+        <div class="field"><label>Waa</label><input id="xWaa" type="number" min="0" step="0.0001"></div>
+        <div class="field"><label>Semente (opcional)</label><input id="xSeed" type="text"></div>
+      </div>
+      <div class="actions"><button id="runDS">Simular</button><button id="csvDS" class="btn secondary" disabled>CSV</button></div>
+      
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="xMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência de A × geração</div><div class="canvas-box"><canvas id="xChart"></canvas></div></div><details><summary>Fixação/perda por réplica</summary><div id="xTable" class="table-scroll"></div></details></div>
+  </section>
+
+  <section id="view-multi" class="view grid hidden">
+    <div class="card"><h2>Seleção multialélica</h2><div class="help">Três alelos (A, B, C), seis genótipos e seleção determinística por viabilidade. Ordem dos valores adaptativos: AA, AB, AC, BB, BC e CC.</div>
+      <div class="form-grid">
+        <div class="field"><label>pA inicial</label><input id="mA" type="number" min="0" max="1" step="0.001"></div>
+        <div class="field"><label>pB inicial</label><input id="mB" type="number" min="0" max="1" step="0.001"></div>
+        <div class="field"><label>pC inicial</label><input id="mC" type="number" min="0" max="1" step="0.001"></div>
+        <div class="field"><label>Gerações</label><input id="mG" type="number" min="1" max="10000"></div>
+        <div class="field"><label>WAA</label><input id="mWAA" type="number" min="0" step="0.001"></div><div class="field"><label>WAB</label><input id="mWAB" type="number" min="0" step="0.001"></div>
+        <div class="field"><label>WAC</label><input id="mWAC" type="number" min="0" step="0.001"></div><div class="field"><label>WBB</label><input id="mWBB" type="number" min="0" step="0.001"></div>
+        <div class="field"><label>WBC</label><input id="mWBC" type="number" min="0" step="0.001"></div><div class="field"><label>WCC</label><input id="mWCC" type="number" min="0" step="0.001"></div>
+      </div>
+      <div class="actions"><button id="runMulti">Simular</button><button id="csvMulti" class="btn secondary" disabled>CSV</button></div>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="mMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequências dos alelos A, B e C × geração</div><div class="canvas-box"><canvas id="mChart"></canvas></div></div></div>
+  </section>
+  <div class="footer-note">Protótipo acadêmico auditado • cálculos locais • sem coleta de dados • versão 0.3</div>
+</main>
+<script>
+(() => {
+'use strict';
+const VERSION='0.2';
+const MAX_N_EXACT=2000;
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function hashSeed(s){let h=2166136261>>>0;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function rngFrom(value){return mulberry32(hashSeed(value))}
+function newSeed(prefix='GP'){let x;if(globalThis.crypto?.getRandomValues){const a=new Uint32Array(1);crypto.getRandomValues(a);x=a[0].toString(16).padStart(8,'0')}else{x=((Date.now()^Math.floor(Math.random()*0xffffffff))>>>0).toString(16)}return `${prefix}-${x}`}
+function ensureSeed(id,prefix){const el=$(id);let v=el.value.trim();if(!v){v=newSeed(prefix);el.value=v}return v}
+// Amostragem binomial exata por soma de Bernoulli. N é limitado a 2000 (2N <= 4000) para preservar exatidão e desempenho didático.
+function binomial(n,p,rng){p=clamp(p,0,1);if(p===0)return 0;if(p===1)return n;let x=0;for(let i=0;i<n;i++)if(rng()<p)x++;return x}
+function metrics(el,items){el.innerHTML=items.map(([v,l])=>`<div class="metric"><b>${v}</b><span>${l}</span></div>`).join('')}
+function fmt(x,d=4){return Number.isFinite(x)?Number(x).toFixed(d):'—'}
+function fail(msg){alert(msg);return null}
+function num(id,label,{min=-Infinity,max=Infinity,integer=false}={}){const v=Number($(id).value);if(!Number.isFinite(v))return fail(`${label}: informe um número válido.`);if(integer&&!Number.isInteger(v))return fail(`${label}: informe um número inteiro.`);if(v<min||v>max)return fail(`${label}: use um valor entre ${min} e ${max}.`);return v}
+function validateFitness(vals){if(vals.some(v=>v===null))return false;if(vals.every(v=>v===0)){fail('Todos os genótipos possuem fitness zero; não é possível formar a geração seguinte.');return false}return true}
+function downloadCSV(name,rows){const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function table(headers,rows){return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
+const palette=['#15324a','#2d6a7a','#7a4d2d','#6d5b8c','#437f5b','#a05a67','#7d6f36','#3f6c8e','#8a5f2e','#555'];
+function drawLines(canvas,series,opts={}){const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.max(300,Math.floor(rect.width*dpr));canvas.height=Math.max(180,Math.floor(rect.height*dpr));const c=canvas.getContext('2d');c.scale(dpr,dpr);const W=rect.width,H=rect.height,m={l:48,r:16,t:15,b:36};c.clearRect(0,0,W,H);c.fillStyle='#fff';c.fillRect(0,0,W,H);c.strokeStyle='#d6e0e4';c.lineWidth=1;const yMin=opts.yMin??0,yMax=opts.yMax??1,xMax=opts.xMax??Math.max(...series.map(s=>s.data.length-1),1);for(let i=0;i<=5;i++){const y=m.t+(H-m.t-m.b)*i/5;c.beginPath();c.moveTo(m.l,y);c.lineTo(W-m.r,y);c.stroke();c.fillStyle='#687883';c.font='11px system-ui';c.textAlign='right';c.fillText((yMax-(yMax-yMin)*i/5).toFixed(opts.yDigits??1),m.l-6,y+4)}for(let i=0;i<=5;i++){const x=m.l+(W-m.l-m.r)*i/5,val=xMax*i/5;c.beginPath();c.moveTo(x,m.t);c.lineTo(x,H-m.b);c.stroke();c.fillStyle='#687883';c.textAlign='center';c.fillText(opts.xTickFormatter?opts.xTickFormatter(val):Math.round(val),x,H-m.b+17)}c.save();c.beginPath();c.rect(m.l,m.t,W-m.l-m.r,H-m.t-m.b);c.clip();series.forEach((s,idx)=>{c.strokeStyle=s.color||palette[idx%palette.length];c.lineWidth=s.width||1.7;c.beginPath();s.data.forEach((y,i)=>{const x=m.l+(W-m.l-m.r)*(i/xMax),yy=m.t+(H-m.t-m.b)*(1-(y-yMin)/(yMax-yMin||1));if(i===0)c.moveTo(x,yy);else c.lineTo(x,yy)});c.stroke()});c.restore();if(opts.legend){let x=m.l,y=12;c.font='11px system-ui';c.textAlign='left';series.slice(0,8).forEach((s,i)=>{c.fillStyle=s.color||palette[i%palette.length];c.fillRect(x,y-8,10,3);c.fillStyle='#475762';c.fillText(s.name||`S${i+1}`,x+14,y-4);x+=75;if(x>W-90){x=m.l;y+=14}})}}
+function selectionStep(p,wAA,wAa,waa){const q=1-p,AA=p*p,Aa=2*p*q,aa=q*q,wbar=AA*wAA+Aa*wAa+aa*waa;if(wbar<=0)return {p:NaN,AA:NaN,Aa:NaN,aa:NaN,wbar};const AAs=AA*wAA/wbar,Aas=Aa*wAa/wbar,aas=aa*waa/wbar;return {p:clamp(AAs+Aas/2,0,1),AA:AAs,Aa:Aas,aa:aas,wbar,preAA:AA,preAa:Aa,preaa:aa}}
+function wbarAt(p,wAA,wAa,waa){const q=1-p;return p*p*wAA+2*p*q*wAa+q*q*waa}
+function hsHtFst(ps){const pbar=ps.reduce((a,b)=>a+b,0)/ps.length,hs=ps.reduce((a,p)=>a+2*p*(1-p),0)/ps.length,ht=2*pbar*(1-pbar);let fst=ht>0?(ht-hs)/ht:0;if(fst<0&&fst>-1e-12)fst=0;return {hs,ht,fst,pbar}}
+let lastDrift,lastSel,lastStr,lastDS,lastMulti,lastMatrix,lastDSMatrix;
+function runDrift(absorb=false){const N=num('dN','Tamanho populacional',{min:2,max:MAX_N_EXACT,integer:true}),baseG=num('dG','Gerações',{min:1,max:10000,integer:true}),p0=num('dP','Frequência inicial',{min:0,max:1}),R=num('dR','Réplicas',{min:1,max:200,integer:true});if([N,baseG,p0,R].some(v=>v===null))return;let G=absorb?Math.min(10000,Math.max(baseG,1000)):baseG;const seed=ensureSeed('dSeed','DRIFT'),rng=rngFrom(seed),paths=[],events=[];for(let r=0;r<R;r++){let p=p0,path=[p],event=null;for(let g=1;g<=G;g++){if(p>0&&p<1)p=binomial(2*N,p,rng)/(2*N);path.push(p);if((p===0||p===1)&&!event){event={type:p===1?'Fixado':'Perdido',gen:g};if(absorb)break}}paths.push(path);events.push(event||{type:'Mantido',gen:null})}const fix=events.filter(e=>e.type==='Fixado').length,loss=events.filter(e=>e.type==='Perdido').length,evs=events.filter(e=>e.gen!==null);metrics($('dMetrics'),[[fix,'fixados'],[loss,'perdidos'],[R-fix-loss,'mantidos'],[evs.length?fmt(evs.reduce((a,e)=>a+e.gen,0)/evs.length,1):'—','média gerações até evento']]);drawLines($('dChart'),paths.map((p,i)=>({name:`R${i+1}`,data:p})),{legend:R<=8});$('dTable').innerHTML=table(['Réplica','Estado','Geração'],events.map((e,i)=>[i+1,e.type,e.gen??'—']));lastDrift={paths,events,N,p0,R,G,seed,absorb};$('csvDrift').disabled=false}
+function runSel(){const G=num('sG','Gerações',{min:1,max:10000,integer:true}),wAA=num('sWAA','WAA',{min:0}),wAa=num('sWAa','WAa',{min:0}),waa=num('sWaa','Waa',{min:0});if(!validateFitness([wAA,wAa,waa])||G===null)return;let initials=$('sMulti').value==='six'?[0.01,0.1,0.3,0.5,0.7,0.9]:[num('sP','p₀',{min:0,max:1})];if(initials.some(v=>v===null))return;const stage=$('sGenoStage').value,all=[];for(const p0 of initials){let p=p0,ps=[p],preAA=[],preAa=[],preaa=[],postAA=[],postAa=[],postaa=[],wb=[];for(let g=0;g<=G;g++){const st=selectionStep(p,wAA,wAa,waa);preAA.push(p*p);preAa.push(2*p*(1-p));preaa.push((1-p)*(1-p));postAA.push(st.AA);postAa.push(st.Aa);postaa.push(st.aa);wb.push(st.wbar);if(g<G){p=st.p;ps.push(p)}}all.push({p0,ps,preAA,preAa,preaa,postAA,postAa,postaa,wb})}drawLines($('sChart'),all.map((a,i)=>({name:`p₀=${a.p0}`,data:a.ps,color:palette[i]})),{legend:true});const a=all[0],geno=stage==='post'?[a.postAA,a.postAa,a.postaa]:[a.preAA,a.preAa,a.preaa];drawLines($('sGenoChart'),[{name:'AA',data:geno[0]},{name:'Aa',data:geno[1]},{name:'aa',data:geno[2]}],{legend:true});const fit=[];for(let i=0;i<=200;i++)fit.push(wbarAt(i/200,wAA,wAa,waa));const min=Math.min(...fit),max=Math.max(...fit);drawLines($('sFitChart'),[{name:'W̄',data:fit}],{yMin:Math.min(0,min),yMax:max===0?1:max*1.02,xMax:200,yDigits:2,xTickFormatter:v=>(v/200).toFixed(1)});metrics($('sMetrics'),[[fmt(all[0].ps.at(-1),5),'p final'],[fmt(min,4),'W̄ mínimo'],[fmt(max,4),'W̄ máximo'],[initials.length,'trajetórias']]);lastSel={all,G,wAA,wAa,waa,stage,initials};$('csvSel').disabled=false}
+function simulateStructure(N,D,p0,m,G,rng,untilAbs=false){let ps=Array(D).fill(p0),hist=[ps.slice()],stats=[hsHtFst(ps)];const max=untilAbs?10000:G;for(let g=1;g<=max;g++){const mean=ps.reduce((a,b)=>a+b,0)/D;ps=ps.map(p=>binomial(2*N,(1-m)*p+m*mean,rng)/(2*N));hist.push(ps.slice());stats.push(hsHtFst(ps));if(untilAbs){const absorbed=m===0?ps.every(p=>p===0||p===1):ps.every(p=>p===0)||ps.every(p=>p===1);if(absorbed)break}}return{hist,stats}}
+function runStr(abs=false){const N=num('tN','N por deme',{min:2,max:MAX_N_EXACT,integer:true}),D=num('tD','Número de demes',{min:2,max:50,integer:true}),p0=num('tP','Frequência inicial',{min:0,max:1}),m=num('tM','Taxa de migração',{min:0,max:1}),G=num('tG','Gerações',{min:1,max:10000,integer:true});if([N,D,p0,m,G].some(v=>v===null))return;const seed=ensureSeed('tSeed','STRUCT'),rng=rngFrom(seed),res=simulateStructure(N,D,p0,m,G,rng,abs),series=Array.from({length:D},(_,d)=>({name:`D${d+1}`,data:res.hist.map(x=>x[d])}));drawLines($('tChart'),series,{legend:D<=8});drawLines($('fstChart'),[{name:'FST',data:res.stats.map(x=>x.fst)}],{yMin:0,yMax:Math.max(.05,...res.stats.map(x=>x.fst))*1.05});const z=res.stats.at(-1);metrics($('tMetrics'),[[fmt(z.hs,4),'HS'],[fmt(z.ht,4),'HT'],[fmt(z.fst,4),'FST'],[res.hist.length-1,'gerações']]);lastStr={res,N,D,p0,m,G,seed,abs};$('csvStr').disabled=false}
+function simulateDS(N,p0,G,R,wAA,wAa,waa,rng){const paths=[],events=[];for(let r=0;r<R;r++){let p=p0,path=[p],ev=null;for(let g=1;g<=G;g++){if(p>0&&p<1){p=selectionStep(p,wAA,wAa,waa).p;p=binomial(2*N,p,rng)/(2*N)}path.push(p);if(!ev&&(p===0||p===1))ev={type:p===1?'Fixado':'Perdido',gen:g}}paths.push(path);events.push(ev||{type:'Mantido',gen:null})}return{paths,events}}
+function runDS(){const N=num('xN','N',{min:2,max:MAX_N_EXACT,integer:true}),G=num('xG','Gerações',{min:1,max:10000,integer:true}),p=num('xP','p₀',{min:0,max:1}),R=num('xR','Réplicas',{min:1,max:200,integer:true}),wAA=num('xWAA','WAA',{min:0}),wAa=num('xWAa','WAa',{min:0}),waa=num('xWaa','Waa',{min:0});if([N,G,p,R].some(v=>v===null)||!validateFitness([wAA,wAa,waa]))return;const seed=ensureSeed('xSeed','SELDRIFT'),res=simulateDS(N,p,G,R,wAA,wAa,waa,rngFrom(seed));drawLines($('xChart'),res.paths.map((x,i)=>({name:`R${i+1}`,data:x})),{legend:R<=8});const fix=res.events.filter(e=>e.type==='Fixado').length,loss=res.events.filter(e=>e.type==='Perdido').length;metrics($('xMetrics'),[[fix,'fixados'],[loss,'perdidos'],[R-fix-loss,'mantidos'],[fmt(res.paths.reduce((a,x)=>a+x.at(-1),0)/R,4),'p final médio']]);$('xTable').innerHTML=table(['Réplica','Estado','Geração'],res.events.map((e,i)=>[i+1,e.type,e.gen??'—']));lastDS={res,N,p,G,R,wAA,wAa,waa,seed};$('csvDS').disabled=false}
+function multiMean(p,w){let mean=0;for(let i=0;i<3;i++)for(let j=0;j<3;j++)mean+=p[i]*p[j]*w[i][j];return mean}
+function runMulti(){const a=num('mA','pA inicial',{min:0,max:1}),b=num('mB','pB inicial',{min:0,max:1}),c=num('mC','pC inicial',{min:0,max:1}),G=num('mG','Gerações',{min:1,max:10000,integer:true});if([a,b,c,G].some(v=>v===null))return;if(Math.abs(a+b+c-1)>1e-6)return fail('As frequências iniciais A+B+C devem somar 1.');const vals=['mWAA','mWAB','mWAC','mWBB','mWBC','mWCC'].map((id,i)=>num(id,['WAA','WAB','WAC','WBB','WBC','WCC'][i],{min:0}));if(!validateFitness(vals))return;const [WAA,WAB,WAC,WBB,WBC,WCC]=vals,w=[[WAA,WAB,WAC],[WAB,WBB,WBC],[WAC,WBC,WCC]];let p=[a,b,c],hist=[[...p]],wb=[multiMean(p,w)];if(wb[0]<=0)return fail('O valor adaptativo médio inicial é zero; não é possível formar a geração seguinte.');for(let g=0;g<G;g++){const marg=[0,0,0],mean=multiMean(p,w);for(let i=0;i<3;i++)for(let j=0;j<3;j++)marg[i]+=p[j]*w[i][j];if(mean<=0)return fail('O valor adaptativo médio tornou-se zero; a simulação foi interrompida.');p=p.map((pi,i)=>pi*marg[i]/mean);const sum=p.reduce((x,y)=>x+y,0);p=p.map(x=>x/sum);hist.push([...p]);wb.push(multiMean(p,w))}drawLines($('mChart'),['A','B','C'].map((n,i)=>({name:n,data:hist.map(x=>x[i])})),{legend:true});metrics($('mMetrics'),[[fmt(p[0],4),'pA final'],[fmt(p[1],4),'pB final'],[fmt(p[2],4),'pC final'],[fmt(wb.at(-1),4),'W̄ final']]);lastMulti={hist,wb,G,w:[WAA,WAB,WAC,WBB,WBC,WCC]};$('csvMulti').disabled=false}
+
+$('runDrift').onclick=()=>runDrift(false);$('runDriftAbs').onclick=()=>runDrift(true);$('runSel').onclick=runSel;$('sGenoStage').onchange=()=>{if(lastSel)runSel()};$('runStr').onclick=()=>runStr(false);$('runStrAbs').onclick=()=>runStr(true);$('runMatrix').onclick=runMatrix;$('runDS').onclick=runDS;$('runDSMatrix').onclick=runDSMatrix;$('runMulti').onclick=runMulti;
+function metaRows(obj){return [['# GenPop Sim',`v${VERSION}`],...Object.entries(obj).map(([k,v])=>[`# ${k}`,v])];}
+$('csvDrift').onclick=()=>downloadCSV('deriva.csv',[...metaRows({modelo:'Wright-Fisher diploide; binomial exata',N:lastDrift.N,p0:lastDrift.p0,replicas:lastDrift.R,geracoes_max:lastDrift.G,seed:lastDrift.seed}),[],['geracao',...lastDrift.paths.map((_,i)=>`rep_${i+1}`)],...Array.from({length:Math.max(...lastDrift.paths.map(x=>x.length))},(_,g)=>[g,...lastDrift.paths.map(x=>x[g]??'')]),[],['replica','estado','geracao_evento'],...lastDrift.events.map((e,i)=>[i+1,e.type,e.gen??''])]);
+$('csvSel').onclick=()=>{const a=lastSel.all[0];downloadCSV('selecao.csv',[...metaRows({modelo:'seleção determinística por viabilidade',WAA:lastSel.wAA,WAa:lastSel.wAa,Waa:lastSel.waa,genotipos_grafico:lastSel.stage}),[],['geracao','p','AA_pre','Aa_pre','aa_pre','AA_pos','Aa_pos','aa_pos','Wbar'],...a.ps.map((p,g)=>[g,p,a.preAA[g],a.preAa[g],a.preaa[g],a.postAA[g],a.postAa[g],a.postaa[g],a.wb[g]])])};
+$('csvStr').onclick=()=>downloadCSV('estrutura.csv',[...metaRows({modelo:'ilha simétrico + deriva Wright-Fisher',N:lastStr.N,demes:lastStr.D,p0:lastStr.p0,m:lastStr.m,geracoes:lastStr.G,seed:lastStr.seed}),[],['geracao',...Array.from({length:lastStr.D},(_,i)=>`deme_${i+1}`),'HS','HT','FST'],...lastStr.res.hist.map((x,g)=>[g,...x,lastStr.res.stats[g].hs,lastStr.res.stats[g].ht,lastStr.res.stats[g].fst])]);
+$('csvDS').onclick=()=>downloadCSV('selecao_deriva.csv',[...metaRows({modelo:'seleção por viabilidade + Wright-Fisher',N:lastDS.N,p0:lastDS.p,WAA:lastDS.wAA,WAa:lastDS.wAa,Waa:lastDS.waa,replicas:lastDS.R,geracoes:lastDS.G,seed:lastDS.seed}),[],['geracao',...lastDS.res.paths.map((_,i)=>`rep_${i+1}`)],...Array.from({length:lastDS.G+1},(_,g)=>[g,...lastDS.res.paths.map(x=>x[g]??'')]),[],['replica','estado','geracao_evento'],...lastDS.res.events.map((e,i)=>[i+1,e.type,e.gen??''])]);
+$('csvMulti').onclick=()=>downloadCSV('multialelica.csv',[...metaRows({modelo:'seleção multialélica determinística',WAA:lastMulti.w[0],WAB:lastMulti.w[1],WAC:lastMulti.w[2],WBB:lastMulti.w[3],WBC:lastMulti.w[4],WCC:lastMulti.w[5]}),[],['geracao','pA','pB','pC','Wbar'],...lastMulti.hist.map((x,g)=>[g,...x,lastMulti.wb[g]])]);
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$('view-'+b.dataset.view).classList.remove('hidden');setTimeout(()=>window.dispatchEvent(new Event('resize')),30)});
+let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('installBtn').classList.remove('hidden')});$('installBtn').onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null;$('installBtn').classList.add('hidden')}};
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(lastDrift)drawLines($('dChart'),lastDrift.paths.map((p,i)=>({name:`R${i+1}`,data:p})),{legend:lastDrift.paths.length<=8});if(lastStr){drawLines($('tChart'),Array.from({length:lastStr.D},(_,d)=>({name:`D${d+1}`,data:lastStr.res.hist.map(x=>x[d])})),{legend:lastStr.D<=8});drawLines($('fstChart'),[{name:'FST',data:lastStr.res.stats.map(x=>x.fst)}],{yMin:0,yMax:Math.max(.05,...lastStr.res.stats.map(x=>x.fst))*1.05})}if(lastDS)drawLines($('xChart'),lastDS.res.paths.map((x,i)=>({name:`R${i+1}`,data:x})),{legend:lastDS.res.paths.length<=8});if(lastMulti)drawLines($('mChart'),['A','B','C'].map((n,i)=>({name:n,data:lastMulti.hist.map(x=>x[i])})),{legend:true});if(lastSel){const a=lastSel.all[0],geno=lastSel.stage==='post'?[a.postAA,a.postAa,a.postaa]:[a.preAA,a.preAa,a.preaa];drawLines($('sChart'),lastSel.all.map((x,i)=>({name:`p₀=${x.p0}`,data:x.ps,color:palette[i]})),{legend:true});drawLines($('sGenoChart'),[{name:'AA',data:geno[0]},{name:'Aa',data:geno[1]},{name:'aa',data:geno[2]}],{legend:true});const fit=[];for(let i=0;i<=200;i++)fit.push(wbarAt(i/200,lastSel.wAA,lastSel.wAa,lastSel.waa));drawLines($('sFitChart'),[{name:'W̄',data:fit}],{yMin:Math.min(0,...fit),yMax:Math.max(...fit)*1.02,xMax:200,yDigits:2,xTickFormatter:v=>(v/200).toFixed(1)})}},120)});
+runDrift(false);
+})();
+</script>
+</body></html>

@@ -118,12 +118,12 @@
     </div>
     <div class="card"><h2>Resultados</h2><div id="mMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequências dos alelos A, B e C × geração</div><div class="canvas-box"><canvas id="mChart"></canvas></div></div></div>
   </section>
-  <div class="footer-note">Protótipo acadêmico auditado • cálculos locais • sem coleta de dados • versão 0.3</div>
+  <div class="footer-note">Protótipo acadêmico auditado • cálculos locais • sem coleta de dados • versão 0.3.1</div>
 </main>
 <script>
 (() => {
 'use strict';
-const VERSION='0.2';
+const VERSION='0.3.1';
 const MAX_N_EXACT=2000;
 const $=id=>document.getElementById(id);
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -156,7 +156,7 @@ function runDS(){const N=num('xN','N',{min:2,max:MAX_N_EXACT,integer:true}),G=nu
 function multiMean(p,w){let mean=0;for(let i=0;i<3;i++)for(let j=0;j<3;j++)mean+=p[i]*p[j]*w[i][j];return mean}
 function runMulti(){const a=num('mA','pA inicial',{min:0,max:1}),b=num('mB','pB inicial',{min:0,max:1}),c=num('mC','pC inicial',{min:0,max:1}),G=num('mG','Gerações',{min:1,max:10000,integer:true});if([a,b,c,G].some(v=>v===null))return;if(Math.abs(a+b+c-1)>1e-6)return fail('As frequências iniciais A+B+C devem somar 1.');const vals=['mWAA','mWAB','mWAC','mWBB','mWBC','mWCC'].map((id,i)=>num(id,['WAA','WAB','WAC','WBB','WBC','WCC'][i],{min:0}));if(!validateFitness(vals))return;const [WAA,WAB,WAC,WBB,WBC,WCC]=vals,w=[[WAA,WAB,WAC],[WAB,WBB,WBC],[WAC,WBC,WCC]];let p=[a,b,c],hist=[[...p]],wb=[multiMean(p,w)];if(wb[0]<=0)return fail('O valor adaptativo médio inicial é zero; não é possível formar a geração seguinte.');for(let g=0;g<G;g++){const marg=[0,0,0],mean=multiMean(p,w);for(let i=0;i<3;i++)for(let j=0;j<3;j++)marg[i]+=p[j]*w[i][j];if(mean<=0)return fail('O valor adaptativo médio tornou-se zero; a simulação foi interrompida.');p=p.map((pi,i)=>pi*marg[i]/mean);const sum=p.reduce((x,y)=>x+y,0);p=p.map(x=>x/sum);hist.push([...p]);wb.push(multiMean(p,w))}drawLines($('mChart'),['A','B','C'].map((n,i)=>({name:n,data:hist.map(x=>x[i])})),{legend:true});metrics($('mMetrics'),[[fmt(p[0],4),'pA final'],[fmt(p[1],4),'pB final'],[fmt(p[2],4),'pC final'],[fmt(wb.at(-1),4),'W̄ final']]);lastMulti={hist,wb,G,w:[WAA,WAB,WAC,WBB,WBC,WCC]};$('csvMulti').disabled=false}
 
-$('runDrift').onclick=()=>runDrift(false);$('runDriftAbs').onclick=()=>runDrift(true);$('runSel').onclick=runSel;$('sGenoStage').onchange=()=>{if(lastSel)runSel()};$('runStr').onclick=()=>runStr(false);$('runStrAbs').onclick=()=>runStr(true);$('runMatrix').onclick=runMatrix;$('runDS').onclick=runDS;$('runDSMatrix').onclick=runDSMatrix;$('runMulti').onclick=runMulti;
+$('runDrift').onclick=()=>runDrift(false);$('runDriftAbs').onclick=()=>runDrift(true);$('runSel').onclick=runSel;$('sGenoStage').onchange=()=>{if(lastSel)runSel()};$('runStr').onclick=()=>runStr(false);$('runStrAbs').onclick=()=>runStr(true);$('runDS').onclick=runDS;$('runMulti').onclick=runMulti;
 function metaRows(obj){return [['# GenPop Sim',`v${VERSION}`],...Object.entries(obj).map(([k,v])=>[`# ${k}`,v])];}
 $('csvDrift').onclick=()=>downloadCSV('deriva.csv',[...metaRows({modelo:'Wright-Fisher diploide; binomial exata',N:lastDrift.N,p0:lastDrift.p0,replicas:lastDrift.R,geracoes_max:lastDrift.G,seed:lastDrift.seed}),[],['geracao',...lastDrift.paths.map((_,i)=>`rep_${i+1}`)],...Array.from({length:Math.max(...lastDrift.paths.map(x=>x.length))},(_,g)=>[g,...lastDrift.paths.map(x=>x[g]??'')]),[],['replica','estado','geracao_evento'],...lastDrift.events.map((e,i)=>[i+1,e.type,e.gen??''])]);
 $('csvSel').onclick=()=>{const a=lastSel.all[0];downloadCSV('selecao.csv',[...metaRows({modelo:'seleção determinística por viabilidade',WAA:lastSel.wAA,WAa:lastSel.wAa,Waa:lastSel.waa,genotipos_grafico:lastSel.stage}),[],['geracao','p','AA_pre','Aa_pre','aa_pre','AA_pos','Aa_pos','aa_pos','Wbar'],...a.ps.map((p,g)=>[g,p,a.preAA[g],a.preAa[g],a.preaa[g],a.postAA[g],a.postAa[g],a.postaa[g],a.wb[g]])])};
@@ -168,7 +168,6 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelect
 let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('installBtn').classList.remove('hidden')});$('installBtn').onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null;$('installBtn').classList.add('hidden')}};
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(lastDrift)drawLines($('dChart'),lastDrift.paths.map((p,i)=>({name:`R${i+1}`,data:p})),{legend:lastDrift.paths.length<=8});if(lastStr){drawLines($('tChart'),Array.from({length:lastStr.D},(_,d)=>({name:`D${d+1}`,data:lastStr.res.hist.map(x=>x[d])})),{legend:lastStr.D<=8});drawLines($('fstChart'),[{name:'FST',data:lastStr.res.stats.map(x=>x.fst)}],{yMin:0,yMax:Math.max(.05,...lastStr.res.stats.map(x=>x.fst))*1.05})}if(lastDS)drawLines($('xChart'),lastDS.res.paths.map((x,i)=>({name:`R${i+1}`,data:x})),{legend:lastDS.res.paths.length<=8});if(lastMulti)drawLines($('mChart'),['A','B','C'].map((n,i)=>({name:n,data:lastMulti.hist.map(x=>x[i])})),{legend:true});if(lastSel){const a=lastSel.all[0],geno=lastSel.stage==='post'?[a.postAA,a.postAa,a.postaa]:[a.preAA,a.preAa,a.preaa];drawLines($('sChart'),lastSel.all.map((x,i)=>({name:`p₀=${x.p0}`,data:x.ps,color:palette[i]})),{legend:true});drawLines($('sGenoChart'),[{name:'AA',data:geno[0]},{name:'Aa',data:geno[1]},{name:'aa',data:geno[2]}],{legend:true});const fit=[];for(let i=0;i<=200;i++)fit.push(wbarAt(i/200,lastSel.wAA,lastSel.wAa,lastSel.waa));drawLines($('sFitChart'),[{name:'W̄',data:fit}],{yMin:Math.min(0,...fit),yMax:Math.max(...fit)*1.02,xMax:200,yDigits:2,xTickFormatter:v=>(v/200).toFixed(1)})}},120)});
-runDrift(false);
 })();
 </script>
 </body></html>

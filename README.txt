@@ -1,4 +1,4 @@
-GenPop Sim v0.3 — versão auditada
+GenPop Sim v0.3.1 — versão auditada
 
 Simulador didático de Genética de Populações, executado localmente no navegador e instalável como PWA.
 
@@ -13,7 +13,7 @@ Correções principais da v0.3:
 - Matriz seleção + deriva informa fixação, perda e manutenção, além da geração média de fixação.
 - Correção do Wbar final no módulo multialélico.
 - CSVs ampliados com metadados e resultados adicionais.
-- Cache do service worker atualizado para v0.3.0.
+- Cache do service worker atualizado para v0.3.1.
 
 Nota científica sobre FST:
 O módulo calcula FST teórico a partir de HS e HT nas populações simuladas, com demes igualmente ponderados. Ele não implementa um estimador amostral como Weir & Cockerham; portanto, valores negativos de estimadores empíricos não são esperados neste módulo.
@@ -21,3 +21,10 @@ O módulo calcula FST teórico a partir de HS e HT nas populações simuladas, c
 
 ALTERAÇÃO PEDAGÓGICA v0.3
 Os parâmetros numéricos não são preenchidos automaticamente nem apresentados como exemplos. O estudante deve interpretar a atividade e inserir manualmente os valores solicitados.
+
+
+CORREÇÃO v0.3.1
+- Corrigida a navegação entre módulos após a remoção dos botões de matrizes/presets.
+- Removidas referências JavaScript a botões inexistentes, que interrompiam a inicialização da interface.
+- Removida a simulação automática ao abrir o aplicativo, pois os campos agora exigem preenchimento manual.
+- Metadados internos atualizados para v0.3.1.

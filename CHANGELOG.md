@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.1
+
+- Corrigida a troca entre os cinco módulos no aplicativo instalado e no navegador.
+- Removidas referências JavaScript aos botões `runMatrix` e `runDSMatrix`, eliminados na v0.3; essas referências interrompiam a execução do script antes do registro dos eventos das abas.
+- Removida a execução automática de Deriva genética ao abrir o aplicativo, incompatível com a opção pedagógica de campos sem valores predefinidos.
+- Atualizada a constante interna de versão para `0.3.1`.
+- Atualizado o cache da PWA para `genpop-sim-v0.3.1`.
+
 ## v0.3.0
 - Removidos todos os botões de preenchimento automático (presets) associados aos Estudos Dirigidos.
 - Removidos os valores numéricos predefinidos dos campos de parâmetros; o estudante deve preencher manualmente os parâmetros antes de simular.

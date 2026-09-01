@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#15324a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="GenPop Sim" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>GenPop Sim — Genética de Populações</title>
+  <style>
+    :root{--bg:#f4f7f8;--card:#fff;--ink:#17212b;--muted:#5f6b76;--brand:#15324a;--brand2:#2d6a7a;--line:#d8e0e4;--accent:#dfeef1;--danger:#9b2c2c;--ok:#235d3a;--shadow:0 8px 24px rgba(17,33,46,.08)}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    header{position:sticky;top:0;z-index:10;background:var(--brand);color:#fff;padding:14px 16px;box-shadow:0 2px 12px rgba(0,0,0,.14)}
+    .top{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:#fff;color:var(--brand);display:grid;place-items:center;font-weight:800}.title{line-height:1.1}.title b{font-size:1.08rem}.title small{display:block;opacity:.85;margin-top:3px}.spacer{flex:1}
+    button,.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:650;cursor:pointer;background:var(--brand2);color:white}.btn.secondary{background:#e8eef1;color:var(--brand);border:1px solid #c8d4d9}.btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}.btn.warn{background:#805b11}.btn:disabled{opacity:.45;cursor:not-allowed}
+    main{max-width:1200px;margin:16px auto;padding:0 12px 80px}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}.tab{white-space:nowrap;background:#e9eff2;color:#294150;border:1px solid #d1dde2}.tab.active{background:var(--brand);color:#fff}
+    .grid{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:14px;align-items:start}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px}.card h2,.card h3{margin:0 0 12px}.card h2{font-size:1.12rem}.card h3{font-size:1rem}.help{color:var(--muted);font-size:.9rem;line-height:1.4}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:.82rem;font-weight:700;color:#344752}.field input,.field select,.field textarea{width:100%;border:1px solid #c9d4da;border-radius:9px;padding:10px;background:#fff;color:var(--ink);font-size:1rem}.field input:focus,.field select:focus{outline:2px solid #8fb7c2;border-color:transparent}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.preset-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px}.preset{font-size:.8rem;padding:7px 9px;background:#edf4f6;color:#21404b;border:1px solid #cfe0e5}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:8px;margin:12px 0}.metric{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fafcfd}.metric b{display:block;font-size:1.12rem}.metric span{font-size:.78rem;color:var(--muted)}
+    .chart-wrap{border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;margin-top:10px;overflow:hidden}.chart-title{font-weight:700;font-size:.9rem;margin:2px 4px 6px}.canvas-box{width:100%;height:330px}.canvas-box.small{height:250px} canvas{width:100%;height:100%;display:block}
+    .notice{background:#edf5f7;border:1px solid #c9dfe5;border-radius:10px;padding:10px 12px;font-size:.88rem;line-height:1.4;margin-bottom:12px}.notice strong{color:#15324a}.error{background:#fff0f0;border-color:#efc7c7;color:#7a2323}.success{background:#eef8f0;border-color:#cce5d2;color:#1e5d34}
+    table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{border-bottom:1px solid #e2e8eb;padding:7px 6px;text-align:right}th:first-child,td:first-child{text-align:left}th{color:#40525d;background:#f8fafb;position:sticky;top:0}.table-scroll{overflow:auto;max-height:320px;border:1px solid var(--line);border-radius:10px}
+    details{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px;background:#fbfcfd}details summary{font-weight:700;cursor:pointer}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hidden{display:none!important}.footer-note{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}
+    .install-tip{font-size:.8rem;max-width:350px}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--accent);color:#21404b;font-size:.75rem;font-weight:700}
+    @media(max-width:820px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.canvas-box{height:280px}.top .install-tip{display:none}.card{padding:13px}}
+  </style>
+</head>
+<body>
+<header><div class="top"><div class="logo">GP</div><div class="title"><b>GenPop Sim</b><small>Simulador offline de Genética de Populações</small></div><div class="spacer"></div><button id="installBtn" class="btn ghost hidden">Instalar</button></div></header>
+<main>
+  <div id="offlineNotice" class="notice"><strong>Funciona sem internet.</strong> A simulação é feita integralmente no dispositivo. Para instalar como aplicativo, abra esta versão por HTTPS e use “Adicionar à tela de início”.</div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-view="drift">Deriva genética</button>
+    <button class="tab" data-view="selection">Seleção natural</button>
+    <button class="tab" data-view="structure">Estrutura e migração</button>
+    <button class="tab" data-view="driftsel">Seleção + deriva</button>
+    <button class="tab" data-view="multi">Seleção multialélica</button>
+  </div>
+
+  <section id="view-drift" class="view grid">
+    <div class="card"><h2>Deriva genética</h2><div class="help">Modelo Wright–Fisher diploide. Cada réplica/locus evolui independentemente.</div>
+      <div class="preset-row"><button class="preset" data-preset="drift-ed1">ED: N=10</button><button class="preset" data-preset="drift-ed2">ED: N=50</button><button class="preset" data-preset="drift-time">ED: tempo até fixação</button></div>
+      <div class="form-grid">
+        <div class="field"><label>Tamanho populacional (N)</label><input id="dN" type="number" min="2" max="100000" value="10"></div>
+        <div class="field"><label>Gerações</label><input id="dG" type="number" min="1" max="10000" value="50"></div>
+        <div class="field"><label>Frequência inicial de A (p₀)</label><input id="dP" type="number" min="0" max="1" step="0.00001" value="0.5"></div>
+        <div class="field"><label>Réplicas / loci</label><input id="dR" type="number" min="1" max="200" value="10"></div>
+        <div class="field full"><label>Semente aleatória (opcional)</label><input id="dSeed" type="text" placeholder="vazio = nova simulação"></div>
+      </div>
+      <div class="actions"><button id="runDrift">Simular</button><button id="runDriftAbs" class="btn secondary">Até absorção</button><button id="csvDrift" class="btn secondary" disabled>CSV</button></div>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="dMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência do alelo A × geração</div><div class="canvas-box"><canvas id="dChart"></canvas></div></div><details><summary>Resultados por réplica</summary><div id="dTable" class="table-scroll"></div></details></div>
+  </section>
+
+  <section id="view-selection" class="view grid hidden">
+    <div class="card"><h2>Seleção natural — locus dialélico</h2><div class="help">Modelo determinístico com seleção por viabilidade, acasalamento aleatório e Hardy–Weinberg a cada geração.</div>
+      <div class="preset-row"><button class="preset" data-preset="sel-dominant">ED: A dominante</button><button class="preset" data-preset="sel-additive">ED: sem dominância</button><button class="preset" data-preset="sel-over">ED: heterozigoto superior</button><button class="preset" data-preset="sel-under">ED: heterozigoto inferior</button></div>
+      <div class="form-grid">
+        <div class="field"><label>p₀ (A)</label><input id="sP" type="number" min="0" max="1" step="0.00001" value="0.1"></div>
+        <div class="field"><label>Gerações</label><input id="sG" type="number" min="1" max="10000" value="150"></div>
+        <div class="field"><label>WAA</label><input id="sWAA" type="number" min="0" step="0.0001" value="1"></div>
+        <div class="field"><label>WAa</label><input id="sWAa" type="number" min="0" step="0.0001" value="1"></div>
+        <div class="field"><label>Waa</label><input id="sWaa" type="number" min="0" step="0.0001" value="0.9"></div>
+        <div class="field"><label>Frequências iniciais</label><select id="sMulti"><option value="single">Somente p₀</option><option value="six">Seis frequências</option></select></div>
+      </div>
+      <div class="actions"><button id="runSel">Simular</button><button id="csvSel" class="btn secondary" disabled>CSV</button></div>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="sMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência de A × geração</div><div class="canvas-box"><canvas id="sChart"></canvas></div></div><div class="two"><div class="chart-wrap"><div class="chart-title">Frequências genotípicas × geração</div><div class="canvas-box small"><canvas id="sGenoChart"></canvas></div></div><div class="chart-wrap"><div class="chart-title">Valor adaptativo médio (W̄) × p</div><div class="canvas-box small"><canvas id="sFitChart"></canvas></div></div></div></div>
+  </section>
+
+  <section id="view-structure" class="view grid hidden">
+    <div class="card"><h2>Estrutura populacional e migração</h2><div class="help">Modelo-ilha: migração simétrica entre demes seguida de deriva Wright–Fisher em cada deme.</div>
+      <div class="preset-row"><button class="preset" data-preset="str-ed">ED: N=20, m=0</button><button class="preset" data-preset="str-m001">ED: m=0,001</button><button class="preset" data-preset="str-m01">ED: m=0,01</button><button class="preset" data-preset="str-m05">ED: m=0,05</button></div>
+      <div class="form-grid">
+        <div class="field"><label>N por deme</label><input id="tN" type="number" min="2" max="100000" value="20"></div>
+        <div class="field"><label>Número de demes</label><input id="tD" type="number" min="2" max="100" value="10"></div>
+        <div class="field"><label>p₀</label><input id="tP" type="number" min="0" max="1" step="0.00001" value="0.5"></div>
+        <div class="field"><label>Taxa de migração (m)</label><input id="tM" type="number" min="0" max="1" step="0.0001" value="0"></div>
+        <div class="field"><label>Gerações</label><input id="tG" type="number" min="1" max="10000" value="40"></div>
+        <div class="field"><label>Semente (opcional)</label><input id="tSeed" type="text"></div>
+      </div>
+      <div class="actions"><button id="runStr">Simular</button><button id="runStrAbs" class="btn secondary">Até todos fixarem</button><button id="csvStr" class="btn secondary" disabled>CSV</button></div>
+      <details><summary>Comparar N × migração</summary><div class="help" style="margin:8px 0">Calcula FST médio ao final de 40 gerações em 5 réplicas por combinação, como no estudo dirigido.</div><div class="actions"><button id="runMatrix" class="btn secondary">Gerar matriz do ED</button></div><div id="matrixTable" class="table-scroll" style="margin-top:8px"></div></details>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="tMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência de A em cada deme × geração</div><div class="canvas-box"><canvas id="tChart"></canvas></div></div><div class="chart-wrap"><div class="chart-title">FST × geração</div><div class="canvas-box small"><canvas id="fstChart"></canvas></div></div></div>
+  </section>
+
+  <section id="view-driftsel" class="view grid hidden">
+    <div class="card"><h2>Seleção + deriva</h2><div class="help">Seleção por viabilidade seguida de amostragem Wright–Fisher. Permite observar a competição entre processos determinísticos e estocásticos.</div>
+      <div class="preset-row"><button class="preset" data-preset="ds-ed">ED: N=500, p=0,1</button></div>
+      <div class="form-grid">
+        <div class="field"><label>N</label><input id="xN" type="number" min="2" max="100000" value="500"></div>
+        <div class="field"><label>Gerações</label><input id="xG" type="number" min="1" max="10000" value="200"></div>
+        <div class="field"><label>p₀</label><input id="xP" type="number" min="0" max="1" step="0.00001" value="0.1"></div>
+        <div class="field"><label>Réplicas</label><input id="xR" type="number" min="1" max="200" value="5"></div>
+        <div class="field"><label>WAA</label><input id="xWAA" type="number" min="0" step="0.0001" value="1"></div>
+        <div class="field"><label>WAa</label><input id="xWAa" type="number" min="0" step="0.0001" value="1"></div>
+        <div class="field"><label>Waa</label><input id="xWaa" type="number" min="0" step="0.0001" value="0.9"></div>
+        <div class="field"><label>Semente (opcional)</label><input id="xSeed" type="text"></div>
+      </div>
+      <div class="actions"><button id="runDS">Simular</button><button id="csvDS" class="btn secondary" disabled>CSV</button></div>
+      <details><summary>Matriz N × força de seleção</summary><div class="help" style="margin:8px 0">Usa p₀=0,2, N=10/20/50/100 e desvantagem de aa de 5/10/15/20%; 10 réplicas por cenário.</div><div class="actions"><button id="runDSMatrix" class="btn secondary">Executar matriz do ED</button></div><div id="dsMatrix" class="table-scroll" style="margin-top:8px"></div></details>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="xMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequência de A × geração</div><div class="canvas-box"><canvas id="xChart"></canvas></div></div><details><summary>Fixação/perda por réplica</summary><div id="xTable" class="table-scroll"></div></details></div>
+  </section>
+
+  <section id="view-multi" class="view grid hidden">
+    <div class="card"><h2>Seleção multialélica</h2><div class="help">Três alelos (A, B, C), seis genótipos e seleção determinística por viabilidade.</div>
+      <div class="preset-row"><button class="preset" data-preset="multi-ed5">ED: A vantajoso</button><button class="preset" data-preset="multi-ed6">ED: heterozigotos superiores</button></div>
+      <div class="form-grid">
+        <div class="field"><label>pA inicial</label><input id="mA" type="number" min="0" max="1" step="0.001" value="0.34"></div>
+        <div class="field"><label>pB inicial</label><input id="mB" type="number" min="0" max="1" step="0.001" value="0.33"></div>
+        <div class="field"><label>pC inicial</label><input id="mC" type="number" min="0" max="1" step="0.001" value="0.33"></div>
+        <div class="field"><label>Gerações</label><input id="mG" type="number" min="1" max="10000" value="200"></div>
+        <div class="field"><label>WAA</label><input id="mWAA" type="number" step="0.001" value="1"></div><div class="field"><label>WAB</label><input id="mWAB" type="number" step="0.001" value="1"></div>
+        <div class="field"><label>WAC</label><input id="mWAC" type="number" step="0.001" value="1"></div><div class="field"><label>WBB</label><input id="mWBB" type="number" step="0.001" value="0.9"></div>
+        <div class="field"><label>WBC</label><input id="mWBC" type="number" step="0.001" value="0.9"></div><div class="field"><label>WCC</label><input id="mWCC" type="number" step="0.001" value="0.9"></div>
+      </div>
+      <div class="actions"><button id="runMulti">Simular</button><button id="csvMulti" class="btn secondary" disabled>CSV</button></div>
+    </div>
+    <div class="card"><h2>Resultados</h2><div id="mMetrics" class="summary"></div><div class="chart-wrap"><div class="chart-title">Frequências dos alelos A, B e C × geração</div><div class="canvas-box"><canvas id="mChart"></canvas></div></div></div>
+  </section>
+  <div class="footer-note">Protótipo acadêmico • cálculos locais • sem coleta de dados • versão 0.1</div>
+</main>
+<script>
+(() => {
+'use strict';
+const $=id=>document.getElementById(id); const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function hashSeed(s){let h=2166136261>>>0; for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)} return h>>>0}
+function mulberry32(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function rngFrom(value){return value?mulberry32(hashSeed(value)):Math.random}
+function binomial(n,p,rng){p=clamp(p,0,1); if(p===0)return 0;if(p===1)return n;let x=0; if(n<=4000){for(let i=0;i<n;i++) if(rng()<p)x++; return x;} const mean=n*p, sd=Math.sqrt(n*p*(1-p)); let u1=Math.max(rng(),1e-12),u2=rng(); let z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2); return Math.round(clamp(mean+sd*z,0,n));}
+function metrics(el,items){el.innerHTML=items.map(([v,l])=>`<div class="metric"><b>${v}</b><span>${l}</span></div>`).join('')}
+function fmt(x,d=4){return Number.isFinite(x)?Number(x).toFixed(d):'—'}
+function downloadCSV(name,rows){const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function table(headers,rows){return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
+const palette=['#15324a','#2d6a7a','#7a4d2d','#6d5b8c','#437f5b','#a05a67','#7d6f36','#3f6c8e','#8a5f2e','#555'];
+function drawLines(canvas,series,opts={}){const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.max(300,Math.floor(rect.width*dpr));canvas.height=Math.max(180,Math.floor(rect.height*dpr));const c=canvas.getContext('2d');c.scale(dpr,dpr);const W=rect.width,H=rect.height,m={l:48,r:16,t:15,b:36};c.clearRect(0,0,W,H);c.fillStyle='#fff';c.fillRect(0,0,W,H);c.strokeStyle='#d6e0e4';c.lineWidth=1;const yMin=opts.yMin??0,yMax=opts.yMax??1,xMax=opts.xMax??Math.max(...series.map(s=>s.data.length-1),1);for(let i=0;i<=5;i++){const y=m.t+(H-m.t-m.b)*i/5;c.beginPath();c.moveTo(m.l,y);c.lineTo(W-m.r,y);c.stroke();c.fillStyle='#687883';c.font='11px system-ui';c.textAlign='right';c.fillText((yMax-(yMax-yMin)*i/5).toFixed(opts.yDigits??1),m.l-6,y+4)}for(let i=0;i<=5;i++){const x=m.l+(W-m.l-m.r)*i/5;c.beginPath();c.moveTo(x,m.t);c.lineTo(x,H-m.b);c.stroke();c.fillStyle='#687883';c.textAlign='center';c.fillText(Math.round(xMax*i/5),x,H-m.b+17)}c.save();c.beginPath();c.rect(m.l,m.t,W-m.l-m.r,H-m.t-m.b);c.clip();series.forEach((s,idx)=>{c.strokeStyle=s.color||palette[idx%palette.length];c.lineWidth=s.width||1.7;c.beginPath();s.data.forEach((y,i)=>{const x=m.l+(W-m.l-m.r)*(i/xMax),yy=m.t+(H-m.t-m.b)*(1-(y-yMin)/(yMax-yMin||1));if(i===0)c.moveTo(x,yy);else c.lineTo(x,yy)});c.stroke()});c.restore();if(opts.legend){let x=m.l,y=12;c.font='11px system-ui';c.textAlign='left';series.slice(0,8).forEach((s,i)=>{c.fillStyle=s.color||palette[i%palette.length];c.fillRect(x,y-8,10,3);c.fillStyle='#475762';c.fillText(s.name||`S${i+1}`,x+14,y-4);x+=75;if(x>W-90){x=m.l;y+=14}})}}
+function selectionStep(p,wAA,wAa,waa){const q=1-p;const AA=p*p,Aa=2*p*q,aa=q*q;const wbar=AA*wAA+Aa*wAa+aa*waa;if(wbar<=0)return {p,AA,Aa,aa,wbar};const AAs=AA*wAA/wbar,Aas=Aa*wAa/wbar,aas=aa*waa/wbar;return {p:clamp(AAs+Aas/2,0,1),AA:AAs,Aa:Aas,aa:aas,wbar}}
+let lastDrift,lastSel,lastStr,lastDS,lastMulti;
+function runDrift(absorb=false){let N=+$('dN').value,G=+$('dG').value,p0=+$('dP').value,R=+$('dR').value;if(absorb)G=Math.min(10000,Math.max(G,1000));const rng=rngFrom($('dSeed').value), paths=[],events=[];for(let r=0;r<R;r++){let p=p0,path=[p],event=null;for(let g=1;g<=G;g++){if(p>0&&p<1)p=binomial(2*N,p,rng)/(2*N);path.push(p);if((p===0||p===1)&&!event){event={type:p===1?'Fixado':'Perdido',gen:g};if(absorb)break}}paths.push(path);events.push(event||{type:'Mantido',gen:null})}const fix=events.filter(e=>e.type==='Fixado').length,loss=events.filter(e=>e.type==='Perdido').length;metrics($('dMetrics'),[[fix,'fixados'],[loss,'perdidos'],[R-fix-loss,'mantidos'],[fmt(events.filter(e=>e.gen).reduce((a,e)=>a+e.gen,0)/Math.max(1,events.filter(e=>e.gen).length),1),'média gerações até evento']]);drawLines($('dChart'),paths.map((p,i)=>({name:`R${i+1}`,data:p})),{legend:R<=8});$('dTable').innerHTML=table(['Réplica','Estado','Geração'],events.map((e,i)=>[i+1,e.type,e.gen??'—']));lastDrift={paths,events,N,p0};$('csvDrift').disabled=false}
+function runSel(){const G=+$('sG').value,wAA=+$('sWAA').value,wAa=+$('sWAa').value,waa=+$('sWaa').value;let initials=$('sMulti').value==='six'?[0.01,0.1,0.3,0.5,0.7,0.9]:[+$('sP').value];const all=[];for(const p0 of initials){let p=p0,ps=[p],AA=[],Aa=[],aa=[],wb=[];for(let g=0;g<=G;g++){const st=selectionStep(p,wAA,wAa,waa);AA.push((1-p)*(0)+p*p);Aa.push(2*p*(1-p));aa.push((1-p)*(1-p));wb.push(st.wbar);if(g<G){p=st.p;ps.push(p)}}all.push({p0,ps,AA,Aa,aa,wb})}drawLines($('sChart'),all.map((a,i)=>({name:`p₀=${a.p0}`,data:a.ps,color:palette[i]})),{legend:true});const a=all[0];drawLines($('sGenoChart'),[{name:'AA',data:a.AA},{name:'Aa',data:a.Aa},{name:'aa',data:a.aa}],{legend:true});const fit=[];for(let i=0;i<=200;i++){const p=i/200,q=1-p;fit.push(p*p*wAA+2*p*q*wAa+q*q*waa)}const min=Math.min(...fit),max=Math.max(...fit);drawLines($('sFitChart'),[{name:'W̄',data:fit}],{yMin:Math.min(0,min),yMax:max*1.02,xMax:200,yDigits:2});metrics($('sMetrics'),[[fmt(all[0].ps.at(-1),5),'p final'],[fmt(min,4),'W̄ mínimo'],[fmt(max,4),'W̄ máximo'],[initials.length,'trajetórias']]);lastSel={all,G,wAA,wAa,waa};$('csvSel').disabled=false}
+function hsHtFst(ps){const pbar=ps.reduce((a,b)=>a+b,0)/ps.length;const hs=ps.reduce((a,p)=>a+2*p*(1-p),0)/ps.length;const ht=2*pbar*(1-pbar);const fst=ht>0?(ht-hs)/ht:0;return {hs,ht,fst:Math.max(0,fst),pbar}}
+function simulateStructure(N,D,p0,m,G,rng,untilAbs=false){let ps=Array(D).fill(p0),hist=[ps.slice()],stats=[hsHtFst(ps)];const max=untilAbs?10000:G;for(let g=1;g<=max;g++){const mean=ps.reduce((a,b)=>a+b,0)/D;ps=ps.map(p=>{const pm=(1-m)*p+m*mean;return binomial(2*N,pm,rng)/(2*N)});hist.push(ps.slice());stats.push(hsHtFst(ps));if(untilAbs&&ps.every(p=>p===0||p===1))break}return{hist,stats}}
+function runStr(abs=false){const N=+$('tN').value,D=+$('tD').value,p0=+$('tP').value,m=+$('tM').value,G=+$('tG').value,rng=rngFrom($('tSeed').value),res=simulateStructure(N,D,p0,m,G,rng,abs);const series=Array.from({length:D},(_,d)=>({name:`D${d+1}`,data:res.hist.map(x=>x[d])}));drawLines($('tChart'),series,{legend:D<=8});drawLines($('fstChart'),[{name:'FST',data:res.stats.map(x=>x.fst)}],{yMin:0,yMax:Math.max(.05,...res.stats.map(x=>x.fst))*1.05});const z=res.stats.at(-1);metrics($('tMetrics'),[[fmt(z.hs,4),'HS'],[fmt(z.ht,4),'HT'],[fmt(z.fst,4),'FST'],[res.hist.length-1,'gerações']]);lastStr={res,N,D,p0,m};$('csvStr').disabled=false}
+function runMatrix(){const Ns=[10,20,50],ms=[0,.001,.01,.05],rows=[];for(const N of Ns){const row=[N];for(const m of ms){let sum=0;for(let r=0;r<5;r++){const res=simulateStructure(N,10,.5,m,40,Math.random,false);sum+=res.stats.at(-1).fst}row.push(fmt(sum/5,4))}rows.push(row)}$('matrixTable').innerHTML=table(['N','m=0','m=0,001','m=0,01','m=0,05'],rows)}
+function simulateDS(N,p0,G,R,wAA,wAa,waa,rng){const paths=[],events=[];for(let r=0;r<R;r++){let p=p0,path=[p],ev=null;for(let g=1;g<=G;g++){if(p>0&&p<1){p=selectionStep(p,wAA,wAa,waa).p;p=binomial(2*N,p,rng)/(2*N)}path.push(p);if(!ev&&(p===0||p===1))ev={type:p===1?'Fixado':'Perdido',gen:g}}paths.push(path);events.push(ev||{type:'Mantido',gen:null})}return{paths,events}}
+function runDS(){const N=+$('xN').value,G=+$('xG').value,p=+$('xP').value,R=+$('xR').value,wAA=+$('xWAA').value,wAa=+$('xWAa').value,waa=+$('xWaa').value,res=simulateDS(N,p,G,R,wAA,wAa,waa,rngFrom($('xSeed').value));drawLines($('xChart'),res.paths.map((x,i)=>({name:`R${i+1}`,data:x})),{legend:R<=8});const fix=res.events.filter(e=>e.type==='Fixado').length,loss=res.events.filter(e=>e.type==='Perdido').length;metrics($('xMetrics'),[[fix,'fixados'],[loss,'perdidos'],[R-fix-loss,'mantidos'],[fmt(res.paths.reduce((a,x)=>a+x.at(-1),0)/R,4),'p final médio']]);$('xTable').innerHTML=table(['Réplica','Estado','Geração'],res.events.map((e,i)=>[i+1,e.type,e.gen??'—']));lastDS={res,N,p,G};$('csvDS').disabled=false}
+function runDSMatrix(){const Ns=[10,20,50,100],ss=[.05,.10,.15,.20],rows=[];for(const N of Ns){const row=[N];for(const s of ss){const res=simulateDS(N,.2,1000,10,1,1,1-s,Math.random);const fixed=res.events.filter(e=>e.type==='Fixado');row.push(fixed.length?`${fixed.length}/10; ḡ=${fmt(fixed.reduce((a,e)=>a+e.gen,0)/fixed.length,1)}`:'0/10')}rows.push(row)}$('dsMatrix').innerHTML=table(['N','s=5%','s=10%','s=15%','s=20%'],rows)}
+function runMulti(){let a=+$('mA').value,b=+$('mB').value,c=+$('mC').value,G=+$('mG').value;const sum=a+b+c;if(Math.abs(sum-1)>1e-6){alert('As frequências iniciais A+B+C devem somar 1.');return}const w=[[+$('mWAA').value,+$('mWAB').value,+$('mWAC').value],[+$('mWAB').value,+$('mWBB').value,+$('mWBC').value],[+$('mWAC').value,+$('mWBC').value,+$('mWCC').value]];let p=[a,b,c],hist=[[...p]],wb=[];for(let g=0;g<G;g++){const marg=[0,0,0];let mean=0;for(let i=0;i<3;i++)for(let j=0;j<3;j++){mean+=p[i]*p[j]*w[i][j];marg[i]+=p[j]*w[i][j]}wb.push(mean);if(mean<=0)break;p=p.map((pi,i)=>pi*marg[i]/mean);const s=p.reduce((x,y)=>x+y,0);p=p.map(x=>x/s);hist.push([...p])}drawLines($('mChart'),['A','B','C'].map((n,i)=>({name:n,data:hist.map(x=>x[i])})),{legend:true});metrics($('mMetrics'),[[fmt(p[0],4),'pA final'],[fmt(p[1],4),'pB final'],[fmt(p[2],4),'pC final'],[fmt(wb.at(-1),4),'W̄ final']]);lastMulti={hist,wb};$('csvMulti').disabled=false}
+
+$('runDrift').onclick=()=>runDrift(false);$('runDriftAbs').onclick=()=>runDrift(true);$('runSel').onclick=runSel;$('runStr').onclick=()=>runStr(false);$('runStrAbs').onclick=()=>runStr(true);$('runMatrix').onclick=runMatrix;$('runDS').onclick=runDS;$('runDSMatrix').onclick=runDSMatrix;$('runMulti').onclick=runMulti;
+$('csvDrift').onclick=()=>downloadCSV('deriva.csv',[['geracao',...lastDrift.paths.map((_,i)=>`rep_${i+1}`)],...Array.from({length:Math.max(...lastDrift.paths.map(x=>x.length))},(_,g)=>[g,...lastDrift.paths.map(x=>x[g]??'')])]);
+$('csvSel').onclick=()=>downloadCSV('selecao.csv',[['geracao',...lastSel.all.map(x=>`p_p0_${x.p0}`)],...Array.from({length:lastSel.G+1},(_,g)=>[g,...lastSel.all.map(x=>x.ps[g])])]);
+$('csvStr').onclick=()=>downloadCSV('estrutura.csv',[['geracao',...Array.from({length:lastStr.D},(_,i)=>`deme_${i+1}`),'HS','HT','FST'],...lastStr.res.hist.map((x,g)=>[g,...x,lastStr.res.stats[g].hs,lastStr.res.stats[g].ht,lastStr.res.stats[g].fst])]);
+$('csvDS').onclick=()=>downloadCSV('selecao_deriva.csv',[['geracao',...lastDS.res.paths.map((_,i)=>`rep_${i+1}`)],...Array.from({length:lastDS.G+1},(_,g)=>[g,...lastDS.res.paths.map(x=>x[g])])]);
+$('csvMulti').onclick=()=>downloadCSV('multialelica.csv',[['geracao','pA','pB','pC'],...lastMulti.hist.map((x,g)=>[g,...x])]);
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$('view-'+b.dataset.view).classList.remove('hidden');setTimeout(()=>window.dispatchEvent(new Event('resize')),30)});
+document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{const p=b.dataset.preset;if(p==='drift-ed1'){$('dN').value=10;$('dG').value=50;$('dP').value=.5;$('dR').value=10}if(p==='drift-ed2'){$('dN').value=50;$('dG').value=50;$('dP').value=.5;$('dR').value=10}if(p==='drift-time'){$('dN').value=5;$('dG').value=500;$('dP').value=.5;$('dR').value=10}if(p==='sel-dominant'){$('sG').value=150;$('sWAA').value=1;$('sWAa').value=1;$('sWaa').value=.9;$('sMulti').value='six'}if(p==='sel-additive'){$('sWAA').value=1;$('sWAa').value=.95;$('sWaa').value=.9;$('sMulti').value='single'}if(p==='sel-over'){$('sWAA').value=.9;$('sWAa').value=1;$('sWaa').value=.9}if(p==='sel-under'){$('sWAA').value=1;$('sWAa').value=.9;$('sWaa').value=1;$('sG').value=300}if(p.startsWith('str-')){$('tN').value=20;$('tD').value=10;$('tP').value=.5;$('tG').value=40;$('tM').value=p==='str-m001'?.001:p==='str-m01'?.01:p==='str-m05'?.05:0}if(p==='ds-ed'){$('xN').value=500;$('xG').value=200;$('xP').value=.1;$('xR').value=5;$('xWAA').value=1;$('xWAa').value=1;$('xWaa').value=.9}if(p==='multi-ed5'){$('mWAA').value=1;$('mWAB').value=1;$('mWAC').value=1;$('mWBB').value=.9;$('mWBC').value=.9;$('mWCC').value=.9}if(p==='multi-ed6'){$('mWAA').value=.9;$('mWAB').value=1;$('mWAC').value=1;$('mWBB').value=.9;$('mWBC').value=1;$('mWCC').value=.9}});
+let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('installBtn').classList.remove('hidden')});$('installBtn').onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null;$('installBtn').classList.add('hidden')}};
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(lastDrift)drawLines($('dChart'),lastDrift.paths.map((p,i)=>({name:`R${i+1}`,data:p})),{legend:lastDrift.paths.length<=8});if(lastStr){drawLines($('tChart'),Array.from({length:lastStr.D},(_,d)=>({name:`D${d+1}`,data:lastStr.res.hist.map(x=>x[d])})),{legend:lastStr.D<=8});drawLines($('fstChart'),[{name:'FST',data:lastStr.res.stats.map(x=>x.fst)}],{yMin:0,yMax:Math.max(.05,...lastStr.res.stats.map(x=>x.fst))*1.05})}if(lastDS)drawLines($('xChart'),lastDS.res.paths.map((x,i)=>({name:`R${i+1}`,data:x})),{legend:lastDS.res.paths.length<=8});if(lastMulti)drawLines($('mChart'),['A','B','C'].map((n,i)=>({name:n,data:lastMulti.hist.map(x=>x[i])})),{legend:true});if(lastSel)runSel()},120)});
+runDrift(false);
+})();
+</script>
+</body></html>

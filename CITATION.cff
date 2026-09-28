@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "GenPop Sim: simulador de Genética de Populações"
+type: software
+authors:
+  - family-names: "Vasconcellos"
+    given-names: "Anderson Vilasboa de"
+    orcid: "https://orcid.org/0000-0001-8445-105X"
+    affiliation: "Universidade do Estado do Rio de Janeiro (UERJ)"
+version: "0.3.2"
+date-released: "2026-09-28"
+license: MIT
+repository-code: "https://github.com/andersonvilasboa/genpop-sim"
+url: "https://andersonvilasboa.github.io/genpop-sim/"
+abstract: >-
+  Software educacional de acesso aberto para o ensino de Genética de Populações.
+  O GenPop Sim permite explorar deriva genética, seleção natural em locus
+  dialélico, estrutura populacional e migração, ação conjunta de seleção e
+  deriva e seleção multialélica com três alelos.
+keywords:
+  - "genética de populações"
+  - "evolução"
+  - "deriva genética"
+  - "seleção natural"
+  - "migração"
+  - "software educacional"
+  - "simulação computacional"
+  - "ensino de genética"

@@ -52,6 +52,9 @@ Este projeto é distribuído sob a licença MIT. Consulte o arquivo `LICENSE`.
 
 A implementação foi submetida a verificações de consistência matemática e funcional, incluindo cenários neutros e extremos, limites das frequências, comportamento de estados absorventes, reprodutibilidade das simulações estocásticas por semente e consistência de indicadores derivados.
 
+## Doi
+![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23027725.svg)](https://doi.org/10.5281/zenodo.23027725)
+
 ## Palavras-chave
 
 Genética de populações; evolução; deriva genética; seleção natural; migração; software educacional; simulação computacional; ensino de genética.

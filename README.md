@@ -38,11 +38,11 @@ Aplicação web: https://andersonvilasboa.github.io/genpop-sim/
 
 ## Como citar
 
-Uma referência completa com DOI será adicionada após o arquivamento desta versão no Zenodo.
+Se você utilizar o GenPop Sim em atividades de ensino, materiais didáticos ou trabalhos acadêmicos, cite:
 
-Enquanto isso, a versão pode ser identificada como:
+Vasconcellos, A. V. de. (2026). *GenPop Sim: simulador de Genética de Populações* (Version 0.3.2) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23027725
 
-> Vasconcellos, Anderson Vilasboa de. (2026). *GenPop Sim: simulador de Genética de Populações* (Version 0.3.2) [Computer software].
+**DOI:** https://doi.org/10.5281/zenodo.23027725
 
 ## Licença
 

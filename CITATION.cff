@@ -9,6 +9,7 @@ authors:
     affiliation: "Universidade do Estado do Rio de Janeiro (UERJ)"
 version: "0.3.2"
 date-released: "2026-09-28"
+doi: "10.5281/zenodo.23027725"
 license: MIT
 repository-code: "https://github.com/andersonvilasboa/genpop-sim"
 url: "https://andersonvilasboa.github.io/genpop-sim/"
